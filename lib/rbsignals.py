@@ -10,13 +10,19 @@ class SignalsInterface:
         {'name': '5-4-1-Go', 'interval': 5, 'warning': [-5,-4,-1]},
         {'name': '3-2-1-Go', 'interval': 4, 'warning': [-3,-2,-1]}
     ]
+	
+	sequenceListLights = [
+        {'name': 'No lights', 'on': 0, 'flash': 0},
+        {'name': 'On: 1m, Flash: 10s', 'on': 60, 'flash': 10},		
+	]
+ 
 	#signal status definitions
 	SIGNAL_OLD = 1
 	SIGNAL_NOW = 0
 	SIGNAL_FUTURE = -1
  
 	SIGNAL_MAX_AGE = 1500 #ms beyond this a signal is too late to be used
-	COUNTDOWN_PRECISION = 500 #ms
+	COUNTDOWN_PRECISION = 500 #ms -- how often the time is checked
  
 	def __init__(self, fControl: ttk.Frame, relay):
 
@@ -293,3 +299,19 @@ class SignalsInterface:
 		self.selectedSequenceName.set(sequenceNames[defaultSequence])
 		startSigEntry.grid(column=0,row=6,sticky=W)			
 			
+		# light sequence type
+		lightSigLabel = Label(
+			f,
+			text='Lights Sequence'
+		)
+		lightSigLabel.grid(column=0,row=7,sticky='w', pady=(15, 0))
+
+		lightSeqNames = []
+		for s in SignalsInterface.sequenceListLights: lightSeqNames.append(s['name'])
+		### https://www.pythontutorial.net/tkinter/tkinter-combobox/
+		self.selectedLightSeqName = StringVar()
+		startLightSigEntry = ttk.Combobox(f, values=lightSeqNames, textvariable=self.selectedLightSeqName, state='readonly', font=ENTRY_FONT)
+		defaultLightSequence = int(self.config.get('Lights', 'defaultSequence'))
+		self.selectedLightSeqName.set(lightSeqNames[defaultLightSequence])
+		startLightSigEntry.grid(column=0,row=8,sticky=W)			
+   
